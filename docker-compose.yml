@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_seguro
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: "YourStrong@Password"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    networks:
+      - seguro_network
+
+  proposta-service:
+    build:
+      context: ./PropostaService
+      dockerfile: Dockerfile
+    container_name: proposta_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=mssql;Database=PropostaServiceDb;User Id=sa;Password=YourStrong@Password;TrustServerCertificate=True;
+    ports:
+      - "5000:8080"
+    depends_on:
+      - mssql
+    networks:
+      - seguro_network
+
+  contratacao-service:
+    build:
+      context: ./ContratacaoService
+      dockerfile: Dockerfile
+    container_name: contratacao_service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=mssql;Database=ContratacaoServiceDb;User Id=sa;Password=YourStrong@Password;TrustServerCertificate=True;
+      - PropostaService__BaseUrl=http://proposta-service:8080
+    ports:
+      - "5001:8080"
+    depends_on:
+      - mssql
+      - proposta-service
+    networks:
+      - seguro_network
+
+volumes:
+  mssql_data:
+
+networks:
+  seguro_network:
+    driver: bridge
+
