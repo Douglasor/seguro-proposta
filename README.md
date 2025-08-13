@@ -66,7 +66,7 @@ seguro_propostas/
 
 - .NET 8 SDK
 - Docker e Docker Compose
-- PostgreSQL (se executar localmente)
+- SQLServer (se executar localmente)
 
 ## Como Executar
 
@@ -85,12 +85,11 @@ docker-compose up --build
 
 3. Os serviços estarão disponíveis em:
    - PropostaService: http://localhost:5000
-   - ContratacaoService: http://localhost:5001
-   - PostgreSQL: localhost:5432
+   - ContratacaoService: http://localhost:5001   
 
 ### Opção 2: Execução Local
 
-1. Instale o PostgreSQL e configure as bases de dados:
+1. Instale o SQLServer e configure as bases de dados:
 ```sql
 CREATE DATABASE "PropostaServiceDb";
 CREATE DATABASE "ContratacaoServiceDb";
